@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>TalentBoard Sponsor Portal</title>
+  <meta name="description" content="A demo of Stripe client-only Checkout" />
+
+  <link rel="icon" href="favicon.png" type="image/x-icon" />
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    button {
+      background-color: hsl(231, 41%, 29%);
+      color: rgb(255, 255, 255, 95%);
+    }
+
+    button:hover {
+      background-color: hsl(231, 41%, 39%);
+    }
+  </style>
+
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body class="antialiased text-gray-800 px-2">
+  <div class="max-w-2xl mx-auto mt-24 text-center">
+    <div class='text-4xl font-semibold leading-tight'>TalentBoard</div>
+    <p class='mb-20'>Payment Portal</p>
+    <div class="hidden my-2 bg-red-300 shadow border rounded-lg border-red-500 text-red-800 py-2 px-4 font-semibold"
+      id="error-message"></div>
+    <div class='flex flex-col md:flex-row items-start'>
+      <div class="m-4 w-full md:w-1/2mt-12 flex flex-col shadow px-4 py-2 border border-gray-400 rounded-lg">
+        <h1 class="text-2xl font-semibold text-center">Company</h1>
+        <button
+          class="transition shadow ease-in-out duration-150 focus:outline-none rounded-lg py-2 px-4 my-2 font-medium text-lg"
+          data-checkout-mode="subscription" data-price-id="price_1GwuPHDZRanBQTxucG3Rzt1J">
+          Board Member ($10k/Year)
+        </button>
+      </div>
+      <div class="m-4 w-full md:w-1/2mt-12 flex flex-col shadow px-4 py-2 border border-gray-400 rounded-lg">
+        <h1 class="text-2xl font-semibold text-center">Individual</h1>
+        <button
+          class="transition shadow ease-in-out duration-150 focus:outline-none rounded-lg py-2 px-4 my-2 font-medium text-lg"
+          data-checkout-mode="subscription" data-price-id="price_1GwuRXDZRanBQTxu3XYFgDyU">
+          Monthly ($20/month)
+        </button>
+        <button
+          class="transition shadow ease-in-out duration-150 focus:outline-none rounded-lg py-2 px-4 my-2 font-medium text-lg"
+          data-checkout-mode="subscription" data-price-id="price_1GwuRXDZRanBQTxuaDmMyLFC">
+          Biannually ($90/Biannually)
+        </button>
+        <button
+          class="transition shadow ease-in-out duration-150 focus:outline-none rounded-lg py-2 px-4 my-2 font-medium text-lg"
+          data-checkout-mode="subscription" data-price-id="price_1GwuRXDZRanBQTxu3XYFgDyU">
+          Annually ($150/year)
+        </button>
+      </div>
+    </div>
+    <p class="text-sm text-center mt-20">Powered by <a style="color: hsl(231, 41%, 29%);" href="//stripe.com">Stripe</a>
+    </p>
+
+  </div>
+
+  <script>
+    // Replace with your own publishable key: https://dashboard.stripe.com/test/apikeys
+    var PUBLISHABLE_KEY = 'pk_live_mHv0UH3GAjxMhgfda1CwTZEH004KRH3hDD';
+    // Replace with the domain you want your users to be redirected back to after payment
+    var DOMAIN = location.href.replace(/[^/]*$/, '');
+    var stripe = Stripe(PUBLISHABLE_KEY);
+
+    // Handle any errors from Checkout
+    var handleResult = function (result) {
+      if (result.error) {
+        var displayError = document.getElementById('error-message');
+        displayError.textContent = result.error.message;
+        displayError.style.display = "";
+      }
+    };
+
+    document.querySelectorAll('button').forEach(function (button) {
+      button.addEventListener('click', function (e) {
+        var mode = e.target.dataset.checkoutMode;
+        var priceId = e.target.dataset.priceId;
+        var items = [{ price: priceId, quantity: 1 }];
+
+        // Make the call to Stripe.js to redirect to the checkout page
+        // with the sku or plan ID.
+        stripe
+          .redirectToCheckout({
+            mode: mode,
+            lineItems: items,
+            successUrl:
+              DOMAIN + 'success.html?session_id={CHECKOUT_SESSION_ID}',
+            cancelUrl:
+              DOMAIN,
+          })
+          .then(handleResult);
+      });
+    });
+  </script>
+</body>
+
+</html>

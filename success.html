@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Stripe Checkout Sample</title>
+  <meta name="description" content="A demo of Stripe client-only Checkout" />
+
+
+  <link rel="icon" href="favicon.png" type="image/x-icon" />
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+  <div class="h-screen flex flex-col justify-center items-center text-center -mt-20">
+    <div class='text-4xl font-semibold leading-tight'>TalentBoard</div>
+    <p class='mb-20'>Payment Portal</p>
+    <h1 class="text-4xl font-semibold">Thanks!</h1>
+    <p class="text-xl">Your payment succeeded</p>
+    <p class="text-gray-600"><span id="session"></span></p>
+  </div>
+
+  <script>
+    var urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has("session_id")) {
+      document.getElementById("session").textContent = urlParams.get(
+        "session_id"
+      );
+    }
+  </script>
+</body>
+
+</html>
